@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "cpu.h"
 
 #define DATA_LEN 6
@@ -5,6 +8,15 @@
 /**
  * Load the binary bytes from a .ls8 source file into a RAM array
  */
+
+unsigned char cpu_ram_read(struct cpu *cpu, unsigned char address) {
+  return cpu->ram[address];
+}
+
+void cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned char value) {
+  cpu->ram[address] = value;
+}
+
 void cpu_load(struct cpu *cpu)
 {
   char data[DATA_LEN] = {
@@ -24,6 +36,7 @@ void cpu_load(struct cpu *cpu)
   }
 
   // TODO: Replace this with something less hard-coded
+
 }
 
 /**
@@ -64,4 +77,8 @@ void cpu_run(struct cpu *cpu)
 void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
+  cpu->PC = 0;
+  cpu->TODO = 0;
+  cpu->registers = calloc(8, sizeof(unsigned char));
+  cpu->ram = calloc(256, sizeof(unsigned char));
 }

@@ -4,13 +4,13 @@
 // Holds all information about the CPU
 struct cpu {
   // TODO
-  int TODO;
+  unsigned char TODO; //is this like the Stack Pointer?
   // PC
-  char PC;
+  unsigned char PC;
   // registers (array)
-  int *registers;
+  unsigned char registers[8];
   // ram (array)
-  int *ram;
+  unsigned char ram[256];
 };
 
 // ALU operations
