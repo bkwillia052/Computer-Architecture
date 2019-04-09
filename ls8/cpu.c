@@ -17,9 +17,9 @@ void cpu_ram_write(struct cpu *cpu, unsigned char address, unsigned char value) 
   cpu->ram[address] = value; 
 }
 
-void cpu_load(struct cpu *cpu)
+void cpu_load(struct cpu *cpu, char *args[])
 {
-  char data[DATA_LEN] = {
+  /* char data[DATA_LEN] = {
     // From print8.ls8
     0b10000010, // LDI R0,8
     0b00000000,
@@ -27,17 +27,36 @@ void cpu_load(struct cpu *cpu)
     0b01000111, // PRN R0
     0b00000000,
     0b00000001  // HLT
-  };
+  }; */
 
-  int address = 0;
+  /* int address = 0;
 
   for (int i = 0; i < DATA_LEN; i++) {
-    cpu->ram[address] = data[i];
+    cpu->ram[address] = args[i];
     address++;
     printf("Address: %d, %d \n", address, cpu->ram[address]);
-  }
+  } */
 
   // TODO: Replace this with something less hard-coded
+  FILE *fp;
+  char data[1024];
+  unsigned char address = 0;
+  fp = fopen(args[1], "r");
+
+  if(!fp) {
+    printf("Error opening file \n");
+    exit(1);
+  }
+  
+  while(fgets(data, sizeof data, fp) != NULL) {
+    unsigned char byte = strtol(data, NULL, 2);
+    if (data == NULL) {
+      continue;
+    }
+    cpu->ram[address++] = byte;
+  }
+
+  fclose(fp);
 
 }
 
