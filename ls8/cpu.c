@@ -32,7 +32,9 @@ void cpu_load(struct cpu *cpu)
   int address = 0;
 
   for (int i = 0; i < DATA_LEN; i++) {
-    cpu->ram[address++] = data[i];
+    cpu->ram[address] = data[i];
+    address++;
+    printf("Address: %d, %d \n", address, cpu->ram[address]);
   }
 
   // TODO: Replace this with something less hard-coded
@@ -60,35 +62,39 @@ void cpu_run(struct cpu *cpu)
 {
   int running = 1; // True until we get a HLT instruction
   int PC = cpu->PC;
-
+  unsigned char *ram = cpu->ram;
+  unsigned char operand1, operand2, instruction;
   while (running) {
+    /* printf("%d \n", PC);
+    printf("Ram: %d \n", ram[PC]); */
     // TODO
     // 1. Get the value of the current instruction (in address PC).
-    unsigned char instruction = data[PC];
+    instruction = ram[PC];
     // 2. Figure out how many operands this next instruction requires
     
     // 3. Get the appropriate value(s) of the operands following this instruction
     switch(instruction){ 
       case LDI:
-        unsigned char ldi_reg = data[cpu->PC+1];
-        unsigned char operand = data[cpu->PC+2];
+        operand1 = ram[cpu->PC+1]; //The variables set in this switch don't work yet so this is pointless for now. 
+        operand2 = ram[cpu->PC+2];
         break;
       case PRN: 
-        unsigned char prn_reg = data[cpu->PC+1];
+        operand1 = ram[cpu->PC+1];
         break;
     }
     // 4. switch() over it to decide on a course of action.
     // 5. Do whatever the instruction should do according to the spec.
+    
     switch(instruction){
       case HLT:
         running = 0;
         break;
       case LDI:
-        cpu->registers[ldi_reg] = operand;
+        cpu->registers[operand1] = operand2;
         PC+=3;
         break;
       case PRN: 
-        printf("%d", registers[prn_reg]);
+        printf("%d", cpu->registers[operand1]);
         PC+=2;
         break;
 
@@ -108,6 +114,6 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->PC = 0;
-  cpu->registers = calloc(8, sizeof(unsigned char));
-  cpu->ram = calloc(256, sizeof(unsigned char));
+  /* cpu->registers = calloc(8, sizeof(unsigned char));
+  cpu->ram = calloc(256, sizeof(unsigned char)); */
 }
