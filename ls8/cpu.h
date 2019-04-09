@@ -4,7 +4,6 @@
 // Holds all information about the CPU
 struct cpu {
   // TODO
-  unsigned char TODO; //is this like the Stack Pointer?
   // PC
   unsigned char PC;
   // registers (array)
