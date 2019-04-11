@@ -5,6 +5,7 @@
 
 #define DATA_LEN 6
 
+
 /**
  * Load the binary bytes from a .ls8 source file into a RAM array
  */
@@ -85,37 +86,30 @@ void cpu_run(struct cpu *cpu)
   int PC = cpu->PC;
   unsigned char *ram = cpu->ram;
   unsigned char operand1, operand2, instruction;
+
+
+
   while (running) {
-    /* printf("%d \n", PC);
-    printf("Ram: %d \n", ram[PC]); */
+    
     // TODO
     // 1. Get the value of the current instruction (in address PC).
     instruction = ram[PC];
     // 2. Figure out how many operands this next instruction requires
     
-    // 3. Get the appropriate value(s) of the operands following this instruction
-    switch(instruction){ 
-      case LDI:
-        operand1 = ram[cpu->PC+1]; //The variables set in this switch don't work yet so this is pointless for now. 
-        operand2 = ram[cpu->PC+2];
-        break;
-      case PRN: 
-        operand1 = ram[cpu->PC+1];
-        break;
-      case MUL:
-        operand1 = ram[cpu->PC+1]; //The variables set in this switch don't work yet so this is pointless for now. 
-        operand2 = ram[cpu->PC+2];
-        break;
-    }
+    operand1 = cpu_ram_read(cpu, cpu->PC+1);  
+    operand2 = cpu_ram_read(cpu, cpu->PC+2);
     // 4. switch() over it to decide on a course of action.
     // 5. Do whatever the instruction should do according to the spec.
+    printf("PC: %d \n", PC);
     
     switch(instruction){
+
       case HLT:
         running = 0;
         break;
       case LDI:
         cpu->registers[operand1] = operand2;
+        printf("LDI: %d \n", cpu->registers[operand1]);
         PC+=3;
         break;
       case PRN: 
@@ -126,15 +120,24 @@ void cpu_run(struct cpu *cpu)
         alu(cpu, ALU_MUL, operand1, operand2);
         PC+=3;
         break;
+      case PUSH:
+        cpu->registers[7]--;
+        cpu->ram[cpu->registers[7]] = operand1;
+        PC+=2;
+        break;
 
-
-
+      case POP:
+        cpu->registers[operand1] = cpu->ram[cpu->registers[7]];
+        cpu->registers[7]++;
+        PC+=2;
+        break;
+      }
 
     }
     
     // 6. Move the PC to the next instruction.
     
-  }
+  
 }
 
 /**
@@ -144,6 +147,7 @@ void cpu_init(struct cpu *cpu)
 {
   // TODO: Initialize the PC and other special registers
   cpu->PC = 0;
+  cpu->registers[7] = 0xF4;
   /* cpu->registers = calloc(8, sizeof(unsigned char));
   cpu->ram = calloc(256, sizeof(unsigned char)); */
 }
