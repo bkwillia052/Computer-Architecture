@@ -11,6 +11,7 @@
  */
 
 unsigned char cpu_ram_read(struct cpu *cpu, unsigned char address) {
+  printf("Read ~ Address: %d | Ram Value: %d \n ", address, cpu->ram[address] );
   return cpu->ram[address]; //recieves cpu and address and returns the value at the address in RAM
 }
 
@@ -54,7 +55,8 @@ void cpu_load(struct cpu *cpu, char *args[])
     if (data == NULL) {
       continue;
     }
-    cpu->ram[address++] = byte;
+    cpu->ram[address] = byte;
+    address++;
   }
 
   fclose(fp);
@@ -96,11 +98,11 @@ void cpu_run(struct cpu *cpu)
     instruction = ram[PC];
     // 2. Figure out how many operands this next instruction requires
     
-    operand1 = cpu_ram_read(cpu, cpu->PC+1);  
-    operand2 = cpu_ram_read(cpu, cpu->PC+2);
+    operand1 = cpu_ram_read(cpu, PC+1);  
+    operand2 = cpu_ram_read(cpu, PC+2);
     // 4. switch() over it to decide on a course of action.
     // 5. Do whatever the instruction should do according to the spec.
-    printf("PC: %d \n", PC);
+    
     
     switch(instruction){
 
