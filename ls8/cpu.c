@@ -68,6 +68,8 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
   switch (op) {
     case ALU_MUL:
       // TODO
+      cpu->registers[regA] *= cpu->registers[regB];
+      printf("%d", cpu->registers[regA]);
       break;
 
     // TODO: implement more ALU ops
@@ -100,6 +102,10 @@ void cpu_run(struct cpu *cpu)
       case PRN: 
         operand1 = ram[cpu->PC+1];
         break;
+      case MUL:
+        operand1 = ram[cpu->PC+1]; //The variables set in this switch don't work yet so this is pointless for now. 
+        operand2 = ram[cpu->PC+2];
+        break;
     }
     // 4. switch() over it to decide on a course of action.
     // 5. Do whatever the instruction should do according to the spec.
@@ -116,6 +122,11 @@ void cpu_run(struct cpu *cpu)
         printf("%d", cpu->registers[operand1]);
         PC+=2;
         break;
+      case MUL:
+        alu(cpu, ALU_MUL, operand1, operand2);
+        PC+=3;
+        break;
+
 
 
 
